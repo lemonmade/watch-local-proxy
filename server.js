@@ -57,7 +57,7 @@ export default function(opt) {
     app.use(async (ctx, next) => {
         const path = ctx.request.path;
 
-        console.log({path, query: ctx.querystring});
+        console.log({path, query: ctx.querystring, query: ctx.query});
 
         // skip anything not on the root path
         if (path !== '/') {
@@ -66,6 +66,7 @@ export default function(opt) {
         }
 
         const isNewClientRequest = ctx.query['new'] !== undefined;
+        console.log({isNewClientRequest});
         if (isNewClientRequest) {
             const reqId = hri.random();
             debug('making new client with id %s', reqId);
