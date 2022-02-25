@@ -57,6 +57,8 @@ export default function(opt) {
     app.use(async (ctx, next) => {
         const path = ctx.request.path;
 
+        console.log({path, query: ctx.querystring});
+
         // skip anything not on the root path
         if (path !== '/') {
             await next();
@@ -127,7 +129,7 @@ export default function(opt) {
         }
 
         const clientId = GetClientIdFromHostname(hostname);
-        console.log({clientId, hostname});
+        console.log({clientId, hostname, url: req.url});
         if (!clientId) {
             appCallback(req, res);
             return;
