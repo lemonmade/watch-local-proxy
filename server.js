@@ -28,6 +28,11 @@ export default function(opt) {
     const app = new Koa();
     const router = new Router();
 
+    app.use(async (ctx, next) => {
+        console.log(`##### REQUEST ${ctx.URL.href}`);
+        await next();
+    });
+
     router.get('/api/status', async (ctx, next) => {
         const stats = manager.stats;
         ctx.body = {
@@ -56,8 +61,6 @@ export default function(opt) {
     // root endpoint
     app.use(async (ctx, next) => {
         const path = ctx.request.path;
-
-        console.log({path, query: ctx.querystring, query: ctx.query});
 
         // skip anything not on the root path
         if (path !== '/') {
@@ -132,13 +135,13 @@ export default function(opt) {
         }
 
         const clientId = GetClientIdFromHostname(hostname);
-        console.log({clientId, hostname, url: req.url});
+        const client = Boolean(clientId) && manager.getClient(clientId);
+        console.log({clientId, hostname, url: req.url, client});
         if (!clientId) {
             appCallback(req, res);
             return;
         }
 
-        const client = manager.getClient(clientId);
         if (!client) {
             res.statusCode = 404;
             res.end('404');
