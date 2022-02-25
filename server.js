@@ -28,11 +28,6 @@ export default function(opt) {
     const app = new Koa();
     const router = new Router();
 
-    app.use(async (ctx, next) => {
-        console.log(`##### REQUEST ${ctx.URL.href}`);
-        await next();
-    });
-
     router.get('/api/status', async (ctx, next) => {
         const stats = manager.stats;
         ctx.body = {
@@ -126,6 +121,8 @@ export default function(opt) {
     const appCallback = app.callback();
 
     server.on('request', (req, res) => {
+        console.log(`##### REQUEST ${req.headers.host}${req.url}`);
+
         // without a hostname, we won't know who the request is for
         const hostname = req.headers.host;
         if (!hostname) {
